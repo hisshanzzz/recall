@@ -1,0 +1,17 @@
+[project]
+name = "livekit-bey-agent"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.136.1",
+    "httpx>=0.28.1",
+    "livekit-agents>=1.5.9",
+    "livekit-api>=1.1.0",
+    "livekit-plugins-bey>=1.5.9",
+    "livekit-plugins-deepgram>=1.5.9",
+    "livekit-plugins-groq>=1.5.9",
+    "livekit-plugins-silero>=1.5.9",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+    "uvicorn>=0.47.0",
+]
