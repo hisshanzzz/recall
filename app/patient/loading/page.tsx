@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Avatar } from "@/components/Avatar"
 import { Check } from "lucide-react"
@@ -25,6 +25,7 @@ export default function PatientLoadingPage() {
   const [tokenReady, setTokenReady] = useState(false)
   const [tokenError, setTokenError] = useState<string | null>(null)
   const [minTimeElapsed, setMinTimeElapsed] = useState(false)
+  const fetchedRef = useRef(false)
 
   const loadToken = useCallback(async () => {
     setTokenError(null)
@@ -41,6 +42,8 @@ export default function PatientLoadingPage() {
   }, [])
 
   useEffect(() => {
+    if (fetchedRef.current) return
+    fetchedRef.current = true
     void loadToken()
   }, [loadToken])
 

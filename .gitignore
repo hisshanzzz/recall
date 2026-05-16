@@ -11,6 +11,9 @@ __v0_jsx-dev-runtime.ts
 livekit-bey-agent/.env
 livekit-bey-agent/.venv/
 
+# Session data
+data/sessions/
+
 # Common ignores
 node_modules
 .next/
