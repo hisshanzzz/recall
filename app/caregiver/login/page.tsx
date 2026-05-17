@@ -23,7 +23,7 @@ export default function CaregiverLoginPage() {
 
     await new Promise((resolve) => setTimeout(resolve, 800))
 
-    if (email === VALID_EMAIL && password === VALID_PASSWORD) {
+    if (email.trim().toLowerCase() === VALID_EMAIL && password.trim() === VALID_PASSWORD) {
       router.push("/caregiver")
     } else {
       setError("Invalid email or password")
@@ -127,10 +127,15 @@ export default function CaregiverLoginPage() {
             </button>
           </form>
 
-          {/* Help */}
-          <p className="mt-10 text-center text-sm text-leather/40">
-            Need access? Contact your administrator
-          </p>
+          {/* Demo credentials */}
+          <button
+            type="button"
+            onClick={() => { setEmail("caregiver@recall.com"); setPassword("caregiver123") }}
+            className="mt-8 w-full p-3 bg-clay/10 hover:bg-clay/20 rounded-xl text-center transition-colors"
+          >
+            <p className="text-xs text-leather/50 mb-1 font-medium">Demo credentials — click to fill</p>
+            <p className="text-xs text-leather/70 font-mono">caregiver@recall.com / caregiver123</p>
+          </button>
         </div>
       </div>
 

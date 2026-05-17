@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "title": "Fishing at Negombo lagoon",
+    "category": "place",
+    "description": "Spent weekends fishing with brother Anura. Would catch prawns and sell at local market. The lagoon was peaceful in early mornings.",
+    "dateAdded": "May 10, 2024",
+    "timesRecalled": 8,
+    "effectiveness": "high"
+  },
+  {
+    "id": 2,
+    "title": "Amma's milk rice",
+    "category": "food",
+    "description": "Mother's special milk rice for Sinhala New Year. The aroma of coconut milk and jaggery. Always served on banana leaves.",
+    "dateAdded": "May 8, 2024",
+    "timesRecalled": 5,
+    "effectiveness": "high"
+  },
+  {
+    "id": 3,
+    "title": "Teaching at Royal College",
+    "category": "career",
+    "description": "35 years teaching mathematics. Proud of students who became doctors and engineers. The old classroom with wooden desks.",
+    "dateAdded": "May 5, 2024",
+    "timesRecalled": 6,
+    "effectiveness": "high"
+  },
+  {
+    "id": 4,
+    "title": "Kataragama pilgrimage",
+    "category": "faith",
+    "description": "Annual journey to Kataragama temple. Walking barefoot on hot sand. The peacocks at the temple grounds.",
+    "dateAdded": "May 3, 2024",
+    "timesRecalled": 4,
+    "effectiveness": "medium"
+  },
+  {
+    "id": 5,
+    "title": "Baila with Anura",
+    "category": "music",
+    "description": "Dancing baila at weddings with brother. The sound of the rabana drum. Everyone in a circle, clapping hands.",
+    "dateAdded": "May 1, 2024",
+    "timesRecalled": 3,
+    "effectiveness": "medium"
+  },
+  {
+    "id": 6,
+    "title": "Wedding day with Kamala",
+    "category": "family",
+    "description": "The sari she wore, deep red with gold border. Exchange of rings at the poruwa ceremony. Her smile.",
+    "dateAdded": "April 28, 2024",
+    "timesRecalled": 7,
+    "effectiveness": "high"
+  },
+  {
+    "id": 1778992086638,
+    "title": "Work",
+    "category": "career",
+    "description": "he worked at Seylan bank in a phase of his life.\n",
+    "dateAdded": "May 17, 2026",
+    "timesRecalled": 0,
+    "effectiveness": "medium"
+  }
+]
