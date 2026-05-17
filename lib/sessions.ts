@@ -4,6 +4,6 @@ export {
   completeSession,
   listSessions,
   getSession,
+  updateSessionSummary,
   getSessionStorageMode,
-  useSupabase,
 } from "./sessions-store"

@@ -3,7 +3,7 @@ import Link from "next/link"
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-warm-white">
-      <nav className="sticky top-0 z-[100] bg-warm-white h-16 px-[60px] flex items-center justify-between border-b border-coffee/5">
+      <nav className="sticky top-0 z-[100] bg-warm-white/80 backdrop-blur-md h-16 px-[60px] flex items-center justify-between border-b border-coffee/5 shadow-sm">
         <Link href="/" className="text-[22px] font-[800] text-coffee tracking-[-0.03em]">
           Recall
         </Link>
@@ -29,16 +29,19 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/patient/login"
-            className="px-5 py-2 rounded-full bg-gradient-to-r from-peach to-maroon text-creme text-[13px] font-medium shadow-lg shadow-peach/20"
+            className="btn-shimmer px-5 py-2 rounded-full bg-gradient-to-r from-peach to-maroon text-creme text-[13px] font-medium shadow-lg shadow-peach/20 hover:scale-[1.03] transition-transform duration-200"
           >
             Patient login
           </Link>
         </div>
       </nav>
 
-      <section id="about" className="bg-warm-white py-20 px-[60px]">
+      <section id="about" className="relative bg-warm-white py-20 px-[60px] overflow-hidden">
+        {/* Decorative background orbs */}
+        <div className="absolute top-[-80px] right-[-60px] w-[500px] h-[500px] rounded-full bg-peach/[0.07] blur-[120px] animate-orb pointer-events-none" />
+        <div className="absolute bottom-[-60px] left-[-80px] w-[400px] h-[400px] rounded-full bg-clay/[0.08] blur-[100px] animate-orb-2 pointer-events-none" />
         <div className="max-w-[1200px] mx-auto grid grid-cols-2 gap-[60px] items-center">
-          <div>
+          <div className="scroll-reveal">
             <h1 className="text-[52px] font-[800] leading-[1.05] tracking-[-0.04em] text-coffee mb-6">
               A companion who never <span className="text-peach">forgets</span>
             </h1>
@@ -50,7 +53,7 @@ export default function LandingPage() {
             <div className="flex items-center gap-4 mb-10">
               <Link
                 href="/patient/login"
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-peach to-maroon text-creme text-[14px] font-semibold shadow-lg shadow-peach/25 hover:shadow-xl hover:shadow-peach/30 transition-shadow duration-200"
+                className="btn-shimmer px-6 py-3 rounded-full bg-gradient-to-r from-peach to-maroon text-creme text-[14px] font-semibold shadow-lg shadow-peach/25 hover:shadow-xl hover:shadow-peach/30 transition-shadow duration-200"
               >
                 I am a patient
               </Link>
@@ -63,23 +66,23 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-10">
-              <div>
+              <div className="scroll-reveal scroll-reveal-delay-2">
                 <div className="text-[24px] font-bold text-coffee">55M+</div>
                 <div className="text-[11px] font-medium text-clay">Dementia patients worldwide</div>
               </div>
-              <div>
+              <div className="scroll-reveal scroll-reveal-delay-3">
                 <div className="text-[24px] font-bold text-coffee">80K+</div>
                 <div className="text-[11px] font-medium text-clay">In Sri Lanka alone</div>
               </div>
-              <div>
+              <div className="scroll-reveal scroll-reveal-delay-4">
                 <div className="text-[24px] font-bold text-coffee">24/7</div>
                 <div className="text-[11px] font-medium text-clay">Ama is always available</div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
-            <div className="bg-coffee rounded-[20px] shadow-2xl overflow-hidden">
+          <div className="flex flex-col gap-5 scroll-reveal scroll-reveal-delay-1">
+            <div className="bg-coffee rounded-[20px] shadow-2xl overflow-hidden animate-float">
               <div className="bg-creme/[0.06] px-4 py-3 flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
@@ -149,18 +152,20 @@ export default function LandingPage() {
 
       <section className="bg-creme py-20 px-[60px]">
         <div className="max-w-[900px] mx-auto text-center">
-          <div className="text-[11px] font-semibold text-clay uppercase tracking-[0.1em] mb-4">The problem</div>
-          <h2 className="text-[36px] font-[800] text-coffee tracking-[-0.03em] mb-4">Dementia is a loneliness crisis</h2>
-          <p className="text-[16px] text-leather leading-[1.6] max-w-[700px] mx-auto mb-12">
-            Patients lose their memories. Families feel helpless from a distance. No existing solution speaks Sinhala, knows the patient&apos;s story, or was built for Sri Lanka.
-          </p>
+          <div className="scroll-reveal">
+            <div className="text-[11px] font-semibold text-clay uppercase tracking-[0.1em] mb-4">The problem</div>
+            <h2 className="text-[36px] font-[800] text-coffee tracking-[-0.03em] mb-4">Dementia is a loneliness crisis</h2>
+            <p className="text-[16px] text-leather leading-[1.6] max-w-[700px] mx-auto mb-12">
+              Patients lose their memories. Families feel helpless from a distance. No existing solution speaks Sinhala, knows the patient&apos;s story, or was built for Sri Lanka.
+            </p>
+          </div>
           <div className="grid grid-cols-3 gap-5">
             {[
-              { stat: "60%", text: "of dementia patients experience severe loneliness and social isolation" },
-              { stat: "3s", text: "A new dementia diagnosis happens somewhere in the world every 3 seconds" },
-              { stat: "0", text: "Existing solutions that speak Sinhala or understand Sri Lankan culture" },
+              { stat: "60%", text: "of dementia patients experience severe loneliness and social isolation", delay: "scroll-reveal-delay-1" },
+              { stat: "3s",  text: "A new dementia diagnosis happens somewhere in the world every 3 seconds", delay: "scroll-reveal-delay-2" },
+              { stat: "0",   text: "Existing solutions that speak Sinhala or understand Sri Lankan culture",   delay: "scroll-reveal-delay-3" },
             ].map((item) => (
-              <div key={item.stat} className="bg-warm-white rounded-[16px] p-6 border border-coffee/[0.08]">
+              <div key={item.stat} className={`scroll-reveal ${item.delay} bg-warm-white rounded-[16px] p-6 border border-coffee/[0.08] hover:-translate-y-1.5 hover:shadow-md transition-all duration-300`}>
                 <div className="text-[36px] font-[800] text-peach mb-2">{item.stat}</div>
                 <p className="text-[13px] text-leather leading-[1.5]">{item.text}</p>
               </div>
@@ -171,7 +176,7 @@ export default function LandingPage() {
 
       <section id="get-started" className="bg-warm-white py-20 px-[60px]">
         <div className="max-w-[1000px] mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 scroll-reveal">
             <div className="text-[11px] font-semibold text-clay uppercase tracking-[0.1em] mb-4">Get started</div>
             <h2 className="text-[36px] font-[800] text-coffee tracking-[-0.03em] mb-4">Who are you?</h2>
             <p className="text-[16px] text-leather leading-[1.6]">
@@ -180,7 +185,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-5">
-            <div className="relative bg-warm-white rounded-[20px] p-7 border border-coffee/[0.08] overflow-hidden">
+            <div className="scroll-reveal scroll-reveal-delay-1 relative bg-warm-white rounded-[20px] p-7 border border-coffee/[0.08] overflow-hidden hover:-translate-y-1.5 hover:shadow-lg hover:border-peach/20 transition-all duration-300">
               <div className="absolute top-[-40px] right-[-40px] w-32 h-32 rounded-full bg-peach/[0.06]" />
               <div className="flex items-start gap-4 mb-5 relative">
                 <div className="w-11 h-11 rounded-xl bg-peach/[0.12] flex items-center justify-center text-[20px]">🧓</div>
@@ -212,13 +217,13 @@ export default function LandingPage() {
               </ul>
               <Link
                 href="/patient/login"
-                className="block w-full text-center px-6 py-3.5 rounded-full bg-gradient-to-r from-peach to-maroon text-creme text-[14px] font-semibold hover:shadow-lg hover:shadow-peach/20 transition-shadow duration-200"
+                className="btn-shimmer block w-full text-center px-6 py-3.5 rounded-full bg-gradient-to-r from-peach to-maroon text-creme text-[14px] font-semibold hover:shadow-lg hover:shadow-peach/20 transition-shadow duration-200"
               >
                 Enter as patient →
               </Link>
             </div>
 
-            <div className="relative bg-warm-white rounded-[20px] p-7 border border-coffee/[0.08] overflow-hidden">
+            <div className="scroll-reveal scroll-reveal-delay-2 relative bg-warm-white rounded-[20px] p-7 border border-coffee/[0.08] overflow-hidden hover:-translate-y-1.5 hover:shadow-lg hover:border-guave/20 transition-all duration-300">
               <div className="absolute top-[-40px] right-[-40px] w-32 h-32 rounded-full bg-guave/[0.06]" />
               <div className="flex items-start gap-4 mb-5 relative">
                 <div className="w-11 h-11 rounded-xl bg-guave/[0.12] flex items-center justify-center text-[20px]">👨‍👩‍👧</div>
@@ -269,14 +274,14 @@ export default function LandingPage() {
             <div className="absolute top-7 left-[14%] right-[14%] h-px bg-coffee/[0.12]" />
             <div className="grid grid-cols-4 gap-8">
               {[
-                { num: "1", color: "peach", title: "Family adds memories", desc: "Caregivers fill in the memory book — names, places, stories, favourite songs" },
-                { num: "2", color: "leather", title: "Ama learns the story", desc: "Recall injects the memory book into Ama before every session via Beyond Presence" },
-                { num: "3", color: "coffee", title: "Patient taps and talks", desc: "One big button. Ama greets them, already knowing who they are" },
-                { num: "4", color: "guave", title: "Family gets updated", desc: "WhatsApp summary lands automatically after every session ends" },
+                { num: "1", color: "peach",   delay: "scroll-reveal-delay-1", title: "Family adds memories",  desc: "Caregivers fill in the memory book — names, places, stories, favourite songs" },
+                { num: "2", color: "leather", delay: "scroll-reveal-delay-2", title: "Ama learns the story",   desc: "Recall injects the memory book into Ama before every session via Beyond Presence" },
+                { num: "3", color: "coffee",  delay: "scroll-reveal-delay-3", title: "Patient taps and talks", desc: "One big button. Ama greets them, already knowing who they are" },
+                { num: "4", color: "guave",   delay: "scroll-reveal-delay-4", title: "Family gets updated",    desc: "WhatsApp summary lands automatically after every session ends" },
               ].map((step) => (
-                <div key={step.num} className="text-center relative">
+                <div key={step.num} className={`text-center relative scroll-reveal ${step.delay}`}>
                   <div
-                    className={`w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center text-[18px] font-bold ${
+                    className={`w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center text-[18px] font-bold hover:scale-105 transition-transform duration-200 ${
                       step.color === "peach"
                         ? "bg-peach/[0.12] text-peach"
                         : step.color === "leather"
@@ -308,13 +313,13 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: "Avatar + lip sync", name: "Beyond Presence", desc: "Photorealistic digital human avatar with real-time lip sync and just-in-time memory context injection per session." },
-              { label: "LLM", name: "Groq", desc: "Ultra-fast inference for real-time Sinhala conversation. Powers Ama's responses with low latency." },
-              { label: "Real-time audio", name: "LiveKit", desc: "Low-latency audio/video transport connecting the patient's browser to the AI agent." },
-              { label: "WhatsApp", name: "Twilio", desc: "Sends the post-session summary directly to the caregiver's phone. No app install needed." },
-              { label: "Frontend", name: "Next.js + Tailwind", desc: "Six screens, Inter font, custom colour palette. Deployed to Netlify. Patient side optimised for tablet." },
+              { label: "Avatar + lip sync", name: "Beyond Presence",   desc: "Photorealistic digital human avatar with real-time lip sync and just-in-time memory context injection per session.", delay: "scroll-reveal-delay-1" },
+              { label: "LLM",               name: "Groq",              desc: "Ultra-fast inference for real-time Sinhala conversation. Powers Ama's responses with low latency.",                    delay: "scroll-reveal-delay-2" },
+              { label: "Real-time audio",   name: "LiveKit",           desc: "Low-latency audio/video transport connecting the patient's browser to the AI agent.",                                  delay: "scroll-reveal-delay-3" },
+              { label: "WhatsApp",          name: "Twilio",            desc: "Sends the post-session summary directly to the caregiver's phone. No app install needed.",                             delay: "scroll-reveal-delay-1" },
+              { label: "Frontend",          name: "Next.js + Tailwind",desc: "Six screens, Inter font, custom colour palette. Deployed to Netlify. Patient side optimised for tablet.",              delay: "scroll-reveal-delay-2" },
             ].map((tech) => (
-              <div key={tech.name} className="bg-creme/[0.06] border border-creme/10 rounded-[14px] p-4">
+              <div key={tech.name} className={`scroll-reveal ${tech.delay} bg-creme/[0.06] border border-creme/10 rounded-[14px] p-4 hover:-translate-y-1 hover:bg-creme/[0.10] hover:border-creme/20 transition-all duration-300`}>
                 <div className="text-[10px] font-semibold text-clay/40 uppercase tracking-wide mb-1">{tech.label}</div>
                 <div className="text-[15px] font-semibold text-creme mb-2">{tech.name}</div>
                 <p className="text-[12px] text-creme/40 leading-[1.45]">{tech.desc}</p>

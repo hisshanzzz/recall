@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { formatDbError } from "@/lib/db-errors"
+import { notifyCaregiverAfterSession } from "@/lib/notify-caregiver"
 import { completeSession } from "@/lib/sessions"
 
 export async function POST(req: NextRequest) {
@@ -17,13 +18,29 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const pid =
+      typeof patient_id === "string" ? patient_id : "sunil-001"
+
     const sessionId = await completeSession(
       room_name,
       duration_seconds,
       Array.isArray(transcript) ? transcript : [],
-      typeof patient_id === "string" ? patient_id : "sunil-001"
+      pid
     )
-    return NextResponse.json({ success: true, sessionId })
+
+    let notify: Awaited<ReturnType<typeof notifyCaregiverAfterSession>> | null =
+      null
+    try {
+      notify = await notifyCaregiverAfterSession(sessionId, pid)
+    } catch (notifyError) {
+      console.error("[sessions/end] notify caregiver", notifyError)
+    }
+
+    return NextResponse.json({
+      success: true,
+      sessionId,
+      ...(notify ?? {}),
+    })
   } catch (e) {
     console.error("[sessions/end]", e)
     const payload = formatDbError(e)

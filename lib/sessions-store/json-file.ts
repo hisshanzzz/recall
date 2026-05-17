@@ -3,7 +3,6 @@ import fs from "fs"
 import path from "path"
 import {
   normalizeTranscript,
-  transcriptPreview,
   type SessionRow,
   type TranscriptMessageRow,
 } from "./types"
@@ -100,12 +99,28 @@ export async function completeSession(
     status: "completed",
     duration_seconds: Math.round(duration),
     ended_at: new Date().toISOString(),
-    summary: transcriptPreview(turns),
+    summary: null,
     topic: session.topic ?? roomName,
   }
 
   writeStore(store)
   return session.id
+}
+
+export async function updateSessionSummary(
+  sessionId: string,
+  fields: { summary: string; mood?: string | null }
+): Promise<void> {
+  const store = readStore()
+  const idx = store.sessions.findIndex((s) => s.id === sessionId)
+  if (idx === -1) throw new Error("Session not found")
+
+  store.sessions[idx] = {
+    ...store.sessions[idx],
+    summary: fields.summary,
+    ...(fields.mood != null ? { mood: fields.mood } : {}),
+  }
+  writeStore(store)
 }
 
 export async function listSessions(patientId: string): Promise<SessionRow[]> {

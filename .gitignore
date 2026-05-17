@@ -18,3 +18,7 @@ data/sessions/
 node_modules
 .next/
 .DS_Store
+
+# Google service account credentials — never commit
+service-account.json
+**/service-account.json

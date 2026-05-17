@@ -9,7 +9,7 @@ AI companion for dementia patients in Sri Lanka. Ama speaks with patients using 
 ```bash
 cd livekit-bey-agent
 cp .env.example .env
-# Fill in LIVEKIT_*, GROQ_API_KEY, DEEPGRAM_API_KEY, BEY_*
+# Fill in LIVEKIT_*, GOOGLE_API_KEY, GOOGLE_APPLICATION_CREDENTIALS, BEY_*
 uv run agent.py dev
 ```
 
@@ -83,4 +83,4 @@ Caregiver **Start session with Thatha** → `/patient/start` → **Begin session
 | Frontend | Netlify | `npm run build` |
 | Agent | Railway | `uv run agent.py start` in `livekit-bey-agent/` |
 
-See `project_overview.md` for WhatsApp/webhook APIs (not yet wired). The voice stack uses **Groq + Deepgram + Beyond Presence** (see `livekit-bey-agent/`), not the Gemini sketch in the overview.
+See `project_overview.md` for WhatsApp/webhook APIs (not yet wired). The voice stack uses **Google STT + Gemini LLM/TTS + Beyond Presence** (see `livekit-bey-agent/`).

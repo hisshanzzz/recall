@@ -19,11 +19,60 @@ from livekit.agents.voice.events import (
     ConversationItemAddedEvent,
     UserInputTranscribedEvent,
 )
-from livekit.plugins import bey, deepgram, groq, silero
+from livekit.plugins import bey, google, silero
 
 from prompts import build_memory_prompt, SUNIL
 
 PATIENT_ID = "sunil-001"
+
+# Chirp 2 requires Speech-to-Text API v2 and a regional endpoint (not "global").
+_GOOGLE_STT_MODEL = "chirp_2"
+_GOOGLE_LLM_MODEL = "gemini-2.5-flash"
+_GOOGLE_LOCATION = "us-central1"
+
+# VAD-only interruptions (disable adaptive ML interruption — avoids extra LLM/API
+# latency and 408 timeouts when Vertex/Gemini is slow).
+_TURN_HANDLING = {
+    "turn_detection": "vad",
+    "interruption": {
+        "mode": "vad",
+        "min_duration": 0.5,
+        "min_words": 0,
+        "resume_false_interruption": True,
+        "false_interruption_timeout": 2.0,
+    },
+    # Skip speculative LLM/TTS while the user is still speaking (reduces API load).
+    "preemptive_generation": {"enabled": False},
+}
+
+# Derive GCP project from the service account file so it doesn't need to be
+# hard-coded or set separately in the environment.
+def _gcp_project() -> str:
+    import json
+    cred_path = _google_credentials_file()
+    try:
+        with open(cred_path) as f:
+            return json.load(f).get("project_id", "")
+    except Exception:
+        return os.environ.get("GOOGLE_CLOUD_PROJECT", "")
+
+
+def _google_credentials_file() -> str:
+    """Return the service-account JSON path.
+
+    Priority:
+    1. GOOGLE_APPLICATION_CREDENTIALS env var
+    2. service-account.json next to agent.py
+    3. service-account.json one directory up (ReCall/)
+    """
+    path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "").strip()
+    if path and os.path.exists(path):
+        return path
+    local = os.path.join(os.path.dirname(__file__), "service-account.json")
+    if os.path.exists(local):
+        return local
+    parent = os.path.join(os.path.dirname(__file__), "..", "service-account.json")
+    return os.path.normpath(parent)
 
 
 def send_session_end(
@@ -58,11 +107,31 @@ async def entrypoint(ctx: JobContext):
 
     await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
 
+    _creds_file = _google_credentials_file()
+    _project = _gcp_project()
+
     session = AgentSession(
+        stt=google.STT(
+            model=_GOOGLE_STT_MODEL,
+            location=_GOOGLE_LOCATION,
+            credentials_file=_creds_file,
+        ),
+        llm=google.LLM(
+            model=_GOOGLE_LLM_MODEL,
+            vertexai=True,
+            project=_project,
+            location=_GOOGLE_LOCATION,
+        ),
+        tts=google.beta.GeminiTTS(
+            model="gemini-2.5-flash-preview-tts",
+            voice_name="Zephyr",
+            vertexai=True,
+            project=_project,
+            location=_GOOGLE_LOCATION,
+            instructions="Speak in a clear, friendly, and natural tone.",
+        ),
         vad=silero.VAD.load(),
-        stt=deepgram.STT(),
-        llm=groq.LLM(model="llama-3.3-70b-versatile"),
-        tts=deepgram.TTS(),
+        turn_handling=_TURN_HANDLING,
     )
 
     def append_turn(speaker: str, text: str) -> None:
@@ -137,7 +206,7 @@ async def entrypoint(ctx: JobContext):
     )
 
     await session.say(
-        f"Ayubowan, {SUNIL['nick']}! Kohomada?",
+        "Hello, I am Ama.",
         allow_interruptions=True,
     )
 

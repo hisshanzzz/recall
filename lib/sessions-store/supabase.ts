@@ -119,3 +119,20 @@ export async function getSession(id: string) {
 
   return { session, messages: messages ?? [] }
 }
+
+export async function updateSessionSummary(
+  sessionId: string,
+  fields: { summary: string; mood?: string | null }
+): Promise<void> {
+  const supabase = getSupabase()
+
+  const { error } = await supabase
+    .from("sessions")
+    .update({
+      summary: fields.summary,
+      ...(fields.mood != null ? { mood: fields.mood } : {}),
+    })
+    .eq("id", sessionId)
+
+  if (error) throw error
+}

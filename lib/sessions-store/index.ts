@@ -3,6 +3,7 @@ export {
   completeSession,
   listSessions,
   getSession,
+  updateSessionSummary,
 } from "./json-file"
 
 export function getSessionStorageMode(): string {

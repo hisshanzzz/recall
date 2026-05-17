@@ -6,10 +6,13 @@ import {
   Room,
   RoomEvent,
   Track,
+  type Participant,
   type RemoteParticipant,
   type RemoteTrack,
   type RemoteTrackPublication,
+  type TranscriptionSegment,
 } from "livekit-client"
+import { LIVEKIT_CHAT_TOPIC } from "@/lib/livekit-chat"
 import {
   clearLiveKitSession,
   fetchLiveKitToken,
@@ -19,17 +22,106 @@ import {
 
 export type CallConnectionStatus = "disconnected" | "connecting" | "connected" | "error"
 
+export type CallChatMessage = {
+  id: string
+  sender: "You" | "Ama"
+  text: string
+  time: string
+}
+
 type UseLiveKitCallOptions = {
   onConnected?: () => void
   onDisconnected?: () => void
 }
 
+function formatChatTime(connectedAtMs: number | null): string {
+  if (connectedAtMs == null) return "0:00"
+  const secs = Math.max(0, Math.floor((Date.now() - connectedAtMs) / 1000))
+  const mins = Math.floor(secs / 60)
+  const rem = secs % 60
+  return `${mins}:${rem.toString().padStart(2, "0")}`
+}
+
+let messageIdCounter = 0
+function nextMessageId(): string {
+  messageIdCounter += 1
+  return `msg-${messageIdCounter}`
+}
+
 export function useLiveKitCall(options?: UseLiveKitCallOptions) {
   const [status, setStatus] = useState<CallConnectionStatus>("disconnected")
   const [error, setError] = useState<string | null>(null)
+  const [messages, setMessages] = useState<CallChatMessage[]>([])
+  const [isSendingText, setIsSendingText] = useState(false)
+
   const roomRef = useRef<Room | null>(null)
   const avatarVideoRef = useRef<HTMLVideoElement>(null)
   const audioElementsRef = useRef<HTMLAudioElement[]>([])
+  const connectedAtRef = useRef<number | null>(null)
+  const segmentToMessageIdRef = useRef<Map<string, string>>(new Map())
+
+  const appendMessage = useCallback((sender: "You" | "Ama", text: string) => {
+    const trimmed = text.trim()
+    if (!trimmed) return
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: nextMessageId(),
+        sender,
+        text: trimmed,
+        time: formatChatTime(connectedAtRef.current),
+      },
+    ])
+  }, [])
+
+  const upsertAmaFromTranscription = useCallback(
+    (segments: TranscriptionSegment[]) => {
+      for (const seg of segments) {
+        const text = seg.text.trim()
+        if (!text) continue
+
+        const existingMessageId = segmentToMessageIdRef.current.get(seg.id)
+        if (existingMessageId) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === existingMessageId ? { ...m, text } : m
+            )
+          )
+        } else {
+          const id = nextMessageId()
+          segmentToMessageIdRef.current.set(seg.id, id)
+          setMessages((prev) => [
+            ...prev,
+            {
+              id,
+              sender: "Ama",
+              text,
+              time: formatChatTime(connectedAtRef.current),
+            },
+          ])
+        }
+
+        if (seg.final) {
+          segmentToMessageIdRef.current.delete(seg.id)
+        }
+      }
+    },
+    []
+  )
+
+  const handleTranscriptionReceived = useCallback(
+    (
+      segments: TranscriptionSegment[],
+      participant?: Participant
+    ) => {
+      const room = roomRef.current
+      if (!room || !participant) return
+      if (participant.identity === room.localParticipant.identity) return
+      upsertAmaFromTranscription(segments)
+    },
+    [upsertAmaFromTranscription]
+  )
 
   const cleanupAudioElements = useCallback(() => {
     audioElementsRef.current.forEach((el) => {
@@ -98,8 +190,11 @@ export function useLiveKitCall(options?: UseLiveKitCallOptions) {
         subscribeParticipantTracks(participant)
       })
 
+      room.on(RoomEvent.TranscriptionReceived, handleTranscriptionReceived)
+
       room.on(RoomEvent.ConnectionStateChanged, (state: ConnectionState) => {
         if (state === ConnectionState.Connected) {
+          connectedAtRef.current = Date.now()
           setStatus("connected")
           options?.onConnected?.()
         } else if (
@@ -114,6 +209,7 @@ export function useLiveKitCall(options?: UseLiveKitCallOptions) {
 
       room.on(RoomEvent.Disconnected, () => {
         setStatus("disconnected")
+        connectedAtRef.current = null
         cleanupAudioElements()
         options?.onDisconnected?.()
       })
@@ -126,6 +222,7 @@ export function useLiveKitCall(options?: UseLiveKitCallOptions) {
         subscribeParticipantTracks(participant)
       })
 
+      connectedAtRef.current = Date.now()
       setStatus("connected")
       options?.onConnected?.()
     } catch (err) {
@@ -136,6 +233,7 @@ export function useLiveKitCall(options?: UseLiveKitCallOptions) {
   }, [
     cleanupAudioElements,
     handleTrackSubscribed,
+    handleTranscriptionReceived,
     options,
     subscribeParticipantTracks,
   ])
@@ -143,17 +241,44 @@ export function useLiveKitCall(options?: UseLiveKitCallOptions) {
   const disconnect = useCallback(async () => {
     const room = roomRef.current
     if (room) {
+      room.off(RoomEvent.TranscriptionReceived, handleTranscriptionReceived)
       await room.disconnect()
       roomRef.current = null
     }
     cleanupAudioElements()
     clearLiveKitSession()
+    connectedAtRef.current = null
+    segmentToMessageIdRef.current.clear()
     setStatus("disconnected")
-  }, [cleanupAudioElements])
+  }, [cleanupAudioElements, handleTranscriptionReceived])
 
   const setMicrophoneEnabled = useCallback(async (enabled: boolean) => {
     await roomRef.current?.localParticipant.setMicrophoneEnabled(enabled)
   }, [])
+
+  const sendText = useCallback(
+    async (text: string) => {
+      const room = roomRef.current
+      const trimmed = text.trim()
+      if (!trimmed || !room || room.state !== ConnectionState.Connected) return
+
+      setIsSendingText(true)
+      try {
+        appendMessage("You", trimmed)
+        await room.localParticipant.sendText(trimmed, {
+          topic: LIVEKIT_CHAT_TOPIC,
+        })
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to send message"
+        setError(message)
+        throw err
+      } finally {
+        setIsSendingText(false)
+      }
+    },
+    [appendMessage]
+  )
 
   useEffect(() => {
     void connect()
@@ -166,9 +291,12 @@ export function useLiveKitCall(options?: UseLiveKitCallOptions) {
   return {
     status,
     error,
+    messages,
+    isSendingText,
     avatarVideoRef,
     connect,
     disconnect,
     setMicrophoneEnabled,
+    sendText,
   }
 }

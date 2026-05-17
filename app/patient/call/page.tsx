@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import {
   Mic,
@@ -14,6 +14,7 @@ import {
   AlertCircle,
   X,
   MessageSquare,
+  Send,
 } from "lucide-react"
 import { useLiveKitCall } from "@/hooks/useLiveKitCall"
 import type { CallConnectionStatus } from "@/hooks/useLiveKitCall"
@@ -75,8 +76,16 @@ function statusDotClass(status: CallConnectionStatus) {
 
 export default function PatientCallPage() {
   const router = useRouter()
-  const { status, error, avatarVideoRef, disconnect, setMicrophoneEnabled } =
-    useLiveKitCall()
+  const {
+    status,
+    error,
+    messages,
+    isSendingText,
+    avatarVideoRef,
+    disconnect,
+    setMicrophoneEnabled,
+    sendText,
+  } = useLiveKitCall()
 
   const [currentTime, setCurrentTime] = useState(new Date())
   const [callDuration, setCallDuration] = useState(0)
@@ -85,21 +94,8 @@ export default function PatientCallPage() {
   const [showMenu, setShowMenu] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [hasConnected, setHasConnected] = useState(false)
-
-  const messages = [
-    {
-      id: 1,
-      sender: "Ama",
-      text: "Ayubowan, Thatha! Kohomada?",
-      time: "0:05",
-    },
-    {
-      id: 2,
-      sender: "You",
-      text: "Hondai, stuti.",
-      time: "0:12",
-    },
-  ]
+  const [chatInput, setChatInput] = useState("")
+  const transcriptEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
@@ -148,6 +144,22 @@ export default function PatientCallPage() {
   const handleEndCall = async () => {
     await disconnect()
   }
+
+  const handleSendMessage = async (e: FormEvent) => {
+    e.preventDefault()
+    const text = chatInput.trim()
+    if (!text || status !== "connected" || isSendingText) return
+    setChatInput("")
+    try {
+      await sendText(text)
+    } catch {
+      setChatInput(text)
+    }
+  }
+
+  useEffect(() => {
+    transcriptEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
 
   return (
     <div className="relative min-h-screen bg-maroon overflow-hidden">
@@ -251,14 +263,41 @@ export default function PatientCallPage() {
                 </div>
               </div>
             ))}
+            <div ref={transcriptEndRef} />
           </div>
 
-          <div className="px-4 py-3 border-t border-creme/10">
+          <form
+            onSubmit={(e) => void handleSendMessage(e)}
+            className="px-4 py-3 border-t border-creme/10 space-y-2"
+          >
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-xs text-creme/50">Live transcript</span>
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Type a message..."
+                disabled={status !== "connected" || isSendingText}
+                className="flex-1 min-w-0 rounded-xl bg-creme/10 border border-creme/10 px-3 py-2 text-sm text-creme placeholder:text-creme/40 focus:outline-none focus:ring-2 focus:ring-peach/40 disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={
+                  status !== "connected" ||
+                  isSendingText ||
+                  !chatInput.trim()
+                }
+                className="w-10 h-10 flex shrink-0 items-center justify-center rounded-xl bg-peach/30 text-creme hover:bg-peach/40 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                aria-label="Send message"
+              >
+                <Send className="w-4 h-4" />
+              </button>
             </div>
-          </div>
+            <p className="text-xs text-creme/50">
+              {status === "connected"
+                ? "Voice or type to reply"
+                : "Connect to send messages"}
+            </p>
+          </form>
         </div>
       </div>
 
