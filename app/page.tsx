@@ -308,13 +308,13 @@ export default function LandingPage() {
             <div className="text-[11px] font-semibold text-clay/50 uppercase tracking-[0.1em] mb-4">Technology</div>
             <h2 className="text-[36px] font-[800] text-creme tracking-[-0.03em] mb-4">Built with the best tools</h2>
             <p className="text-[16px] text-creme/50 leading-[1.6] max-w-[700px] mx-auto">
-              Recall uses Beyond Presence as its core — with Groq for fast LLM responses, LiveKit for real-time audio, and Claude for caregiver summaries.
+              Recall uses Beyond Presence as its core — with Gemini for fast LLM responses, LiveKit for real-time audio, and Claude for caregiver summaries.
             </p>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {[
               { label: "Avatar + lip sync", name: "Beyond Presence",   desc: "Photorealistic digital human avatar with real-time lip sync and just-in-time memory context injection per session.", delay: "scroll-reveal-delay-1" },
-              { label: "LLM",               name: "Groq",              desc: "Ultra-fast inference for real-time Sinhala conversation. Powers Ama's responses with low latency.",                    delay: "scroll-reveal-delay-2" },
+              { label: "LLM",               name: "Gemini",            desc: "Google's Gemini 2.0 Flash powers Ama's real-time Sinhala responses via VertexAI with low latency.",          delay: "scroll-reveal-delay-2" },
               { label: "Real-time audio",   name: "LiveKit",           desc: "Low-latency audio/video transport connecting the patient's browser to the AI agent.",                                  delay: "scroll-reveal-delay-3" },
               { label: "WhatsApp",          name: "Twilio",            desc: "Sends the post-session summary directly to the caregiver's phone. No app install needed.",                             delay: "scroll-reveal-delay-1" },
               { label: "Frontend",          name: "Next.js + Tailwind",desc: "Six screens, Inter font, custom colour palette. Deployed to Netlify. Patient side optimised for tablet.",              delay: "scroll-reveal-delay-2" },
