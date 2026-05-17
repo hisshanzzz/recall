@@ -206,7 +206,7 @@ async def entrypoint(ctx: JobContext):
     )
 
     await session.say(
-        "Hello, I am Ama.",
+        f"Ayubowan, {SUNIL['nick']}! It's so good to see you today, ne?",
         allow_interruptions=True,
     )
 
