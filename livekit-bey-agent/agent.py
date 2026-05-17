@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import asyncio
 import os
 import time
 
@@ -204,6 +205,9 @@ async def entrypoint(ctx: JobContext):
         room=ctx.room,
         agent=Agent(instructions=build_memory_prompt(SUNIL)),
     )
+
+    # Give Bey avatar time to initialise its video stream before speaking
+    await asyncio.sleep(2)
 
     await session.say(
         f"Ayubowan, {SUNIL['nick']}! It's so good to see you today, ne?",
