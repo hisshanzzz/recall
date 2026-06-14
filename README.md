@@ -1,6 +1,19 @@
-# Recall
+# ReCall
 
 AI companion for dementia patients in Sri Lanka. Ama speaks with patients using their memory book; caregivers receive session summaries after each call.
+
+## About this project
+
+| | |
+|---|---|
+| **Event** | Cursor 24H Buildathon Colombo 2026 (Team SustainX) |
+| **Demo video** | [Project ReCall on YouTube](https://youtube.com/shorts/dYMUKUocIl4) |
+| **Original repo** | [methuliH/recall](https://github.com/methuliH/recall) |
+| **Team** | Hiruka Devendra, Methuli Heenkenda, Sehara Kodikara, Mohamed Jaufer Mohamed Hisshan |
+
+We hope to explore collaboration with the **Lanka Alzheimer's Foundation, Colombo** in the future.
+
+---
 
 ## Run locally (two terminals)
 
