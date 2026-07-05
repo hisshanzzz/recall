@@ -1,6 +1,12 @@
 # ReCall
 
-AI companion for dementia patients in Sri Lanka. Ama speaks with patients using their memory book; caregivers receive session summaries after each call.
+[![Cursor Buildathon Colombo 2026](https://img.shields.io/badge/Cursor-24H%20Buildathon%202026-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5bC01LjQ2IDQuNzRMMTYuMTggMjIgMTIgMTguMjcgNy44MiAyMiA5LjU0IDEzLjc0IDQgOS4xMSAxMC45MSA4LjI2IDEyIDJ6Ii8+PC9zdmc+)](https://buildathon.cursorsrilanka.com/)
+[![Demo](https://img.shields.io/badge/Demo-YouTube-red?style=for-the-badge&logo=youtube)](https://youtube.com/shorts/dYMUKUocIl4)
+[![Team SustainX](https://img.shields.io/badge/Team-SustainX-f0b429?style=for-the-badge)](https://github.com/hisshanzzz/recall)
+
+AI companion for dementia patients in Sri Lanka. **Ama** speaks with patients using their memory book; caregivers receive session summaries after each call.
+
+> **Built in 24 hours** at the Cursor Buildathon Colombo (May 16–17, 2026) by Team SustainX.
 
 ## About this project
 
